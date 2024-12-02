@@ -6,8 +6,10 @@ import { useState } from 'react';
 import { Text } from 'src/ui/text';
 import { Select } from 'src/ui/select';
 import {
+	ArticleStateType,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
@@ -15,13 +17,13 @@ import {
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
 
-export const ArticleParamsForm = () => {
+type TArticleParamsProps = {
+	setParamsFn: (_: ArticleStateType) => void;
+};
+
+export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 	const [isActive, setActive] = useState(false);
-	const [selectedFont, setFont] = useState(fontFamilyOptions[0]);
-	const [selectedFontSize, setFontSize] = useState(fontSizeOptions[0]);
-	const [selectedFontColor, setFontColor] = useState(fontColors[0]);
-	const [selectedBg, setBg] = useState(backgroundColors[0]);
-	const [selectedContentWidth, setContentWidth] = useState(contentWidthArr[0]);
+	const [tmpOpts, setTmpOpts] = useState(defaultArticleState);
 
 	return (
 		<>
@@ -35,55 +37,75 @@ export const ArticleParamsForm = () => {
 				className={clsx(styles.container, {
 					[styles.container_open]: isActive,
 				})}>
-				<form className={styles.form}>
+				<form
+					className={styles.form}
+					onSubmit={(evt: React.FormEvent<EventTarget>) => {
+						evt.preventDefault();
+						setParamsFn(tmpOpts);
+					}}>
 					<Text size={31} weight={800} uppercase={true}>
 						Задайте параметры
 					</Text>
 					<Separator />
 					<Select
-						selected={selectedFont}
+						selected={tmpOpts.fontFamilyOption}
 						options={fontFamilyOptions}
 						title='Шрифт'
 						onChange={(opt) => {
-							setFont(opt);
+							setTmpOpts({
+								...tmpOpts,
+								fontFamilyOption: opt,
+							});
 						}}
 					/>
 					<Separator />
 					<RadioGroup
 						name='fontsize'
 						options={fontSizeOptions}
-						selected={selectedFontSize}
+						selected={tmpOpts.fontSizeOption}
 						title='рАЗМЕР шрифта'
 						onChange={(opt) => {
-							setFontSize(opt);
+							setTmpOpts({
+								...tmpOpts,
+								fontSizeOption: opt,
+							});
 						}}
 					/>
 					<Separator />
 					<Select
-						selected={selectedFontColor}
+						selected={tmpOpts.fontColor}
 						options={fontColors}
 						title='Цвет шрифта'
 						onChange={(opt) => {
-							setFontColor(opt);
+							setTmpOpts({
+								...tmpOpts,
+								fontColor: opt,
+							});
 						}}
 					/>
 					<Separator />
 					<Separator />
 					<Select
-						selected={selectedBg}
+						selected={tmpOpts.backgroundColor}
 						options={backgroundColors}
 						title='Цвет фона'
 						onChange={(opt) => {
-							setBg(opt);
+							setTmpOpts({
+								...tmpOpts,
+								backgroundColor: opt,
+							});
 						}}
 					/>
 					<Separator />
 					<Select
-						selected={selectedContentWidth}
+						selected={tmpOpts.contentWidth}
 						options={contentWidthArr}
 						title='Ширина контента'
 						onChange={(opt) => {
-							setContentWidth(opt);
+							setTmpOpts({
+								...tmpOpts,
+								contentWidth: opt,
+							});
 						}}
 					/>
 					<div className={styles.bottomContainer}>
