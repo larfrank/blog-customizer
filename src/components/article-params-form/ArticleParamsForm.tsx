@@ -24,7 +24,7 @@ type TArticleParamsProps = {
 
 export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 	const [isMenuActive, setMenuActive] = useState(false);
-	const [state, setState] = useState(defaultArticleState);
+	const [formState, setFormState] = useState(defaultArticleState);
 	const containerRef = useRef(null);
 
 	useClose({
@@ -32,6 +32,16 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 		rootRef: containerRef,
 		onClose: () => setMenuActive(false),
 	});
+
+	const handleReset = () => {
+		setFormState(defaultArticleState);
+		setParamsFn(defaultArticleState);
+	};
+
+	const handleSubmit = (evt: React.FormEvent<EventTarget>) => {
+		evt.preventDefault();
+		setParamsFn(formState);
+	};
 
 	return (
 		<>
@@ -46,23 +56,18 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 					[styles.container_open]: isMenuActive,
 				})}
 				ref={containerRef}>
-				<form
-					className={styles.form}
-					onSubmit={(evt: React.FormEvent<EventTarget>) => {
-						evt.preventDefault();
-						setParamsFn(state);
-					}}>
+				<form className={styles.form} onSubmit={handleSubmit}>
 					<Text size={31} weight={800} uppercase={true}>
 						Задайте параметры
 					</Text>
 					<Separator />
 					<Select
-						selected={state.fontFamilyOption}
+						selected={formState.fontFamilyOption}
 						options={fontFamilyOptions}
 						title='Шрифт'
 						onChange={(opt) => {
-							setState({
-								...state,
+							setFormState({
+								...formState,
 								fontFamilyOption: opt,
 							});
 						}}
@@ -71,23 +76,23 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 					<RadioGroup
 						name='fontsize'
 						options={fontSizeOptions}
-						selected={state.fontSizeOption}
+						selected={formState.fontSizeOption}
 						title='рАЗМЕР шрифта'
 						onChange={(opt) => {
-							setState({
-								...state,
+							setFormState({
+								...formState,
 								fontSizeOption: opt,
 							});
 						}}
 					/>
 					<Separator />
 					<Select
-						selected={state.fontColor}
+						selected={formState.fontColor}
 						options={fontColors}
 						title='Цвет шрифта'
 						onChange={(opt) => {
-							setState({
-								...state,
+							setFormState({
+								...formState,
 								fontColor: opt,
 							});
 						}}
@@ -95,24 +100,24 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 					<Separator />
 					<Separator />
 					<Select
-						selected={state.backgroundColor}
+						selected={formState.backgroundColor}
 						options={backgroundColors}
 						title='Цвет фона'
 						onChange={(opt) => {
-							setState({
-								...state,
+							setFormState({
+								...formState,
 								backgroundColor: opt,
 							});
 						}}
 					/>
 					<Separator />
 					<Select
-						selected={state.contentWidth}
+						selected={formState.contentWidth}
 						options={contentWidthArr}
 						title='Ширина контента'
 						onChange={(opt) => {
-							setState({
-								...state,
+							setFormState({
+								...formState,
 								contentWidth: opt,
 							});
 						}}
@@ -122,10 +127,7 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 							title='Сбросить'
 							htmlType='reset'
 							type='clear'
-							onClick={() => {
-								setState(defaultArticleState);
-								setParamsFn(defaultArticleState);
-							}}
+							onClick={handleReset}
 						/>
 						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
