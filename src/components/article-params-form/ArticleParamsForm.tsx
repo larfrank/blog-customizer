@@ -22,38 +22,38 @@ type TArticleParamsProps = {
 };
 
 export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
-	const [isActive, setActive] = useState(false);
-	const [tmpOpts, setTmpOpts] = useState(defaultArticleState);
+	const [isMenuActive, setMenuActive] = useState(false);
+	const [state, setState] = useState(defaultArticleState);
 
 	return (
 		<>
 			<ArrowButton
-				isOpen={isActive}
+				isOpen={isMenuActive}
 				onClick={() => {
-					setActive(!isActive);
+					setMenuActive(!isMenuActive);
 				}}
 			/>
 			<aside
 				className={clsx(styles.container, {
-					[styles.container_open]: isActive,
+					[styles.container_open]: isMenuActive,
 				})}>
 				<form
 					className={styles.form}
 					onSubmit={(evt: React.FormEvent<EventTarget>) => {
 						evt.preventDefault();
-						setParamsFn(tmpOpts);
+						setParamsFn(state);
 					}}>
 					<Text size={31} weight={800} uppercase={true}>
 						Задайте параметры
 					</Text>
 					<Separator />
 					<Select
-						selected={tmpOpts.fontFamilyOption}
+						selected={state.fontFamilyOption}
 						options={fontFamilyOptions}
 						title='Шрифт'
 						onChange={(opt) => {
-							setTmpOpts({
-								...tmpOpts,
+							setState({
+								...state,
 								fontFamilyOption: opt,
 							});
 						}}
@@ -62,23 +62,23 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 					<RadioGroup
 						name='fontsize'
 						options={fontSizeOptions}
-						selected={tmpOpts.fontSizeOption}
+						selected={state.fontSizeOption}
 						title='рАЗМЕР шрифта'
 						onChange={(opt) => {
-							setTmpOpts({
-								...tmpOpts,
+							setState({
+								...state,
 								fontSizeOption: opt,
 							});
 						}}
 					/>
 					<Separator />
 					<Select
-						selected={tmpOpts.fontColor}
+						selected={state.fontColor}
 						options={fontColors}
 						title='Цвет шрифта'
 						onChange={(opt) => {
-							setTmpOpts({
-								...tmpOpts,
+							setState({
+								...state,
 								fontColor: opt,
 							});
 						}}
@@ -86,30 +86,38 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 					<Separator />
 					<Separator />
 					<Select
-						selected={tmpOpts.backgroundColor}
+						selected={state.backgroundColor}
 						options={backgroundColors}
 						title='Цвет фона'
 						onChange={(opt) => {
-							setTmpOpts({
-								...tmpOpts,
+							setState({
+								...state,
 								backgroundColor: opt,
 							});
 						}}
 					/>
 					<Separator />
 					<Select
-						selected={tmpOpts.contentWidth}
+						selected={state.contentWidth}
 						options={contentWidthArr}
 						title='Ширина контента'
 						onChange={(opt) => {
-							setTmpOpts({
-								...tmpOpts,
+							setState({
+								...state,
 								contentWidth: opt,
 							});
 						}}
 					/>
 					<div className={styles.bottomContainer}>
-						<Button title='Сбросить' htmlType='reset' type='clear' />
+						<Button
+							title='Сбросить'
+							htmlType='reset'
+							type='clear'
+							onClick={() => {
+								setState(defaultArticleState);
+								setParamsFn(defaultArticleState);
+							}}
+						/>
 						<Button title='Применить' htmlType='submit' type='apply' />
 					</div>
 				</form>
