@@ -2,7 +2,7 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { clsx } from 'clsx';
 import styles from './ArticleParamsForm.module.scss';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Text } from 'src/ui/text';
 import { Select } from 'src/ui/select';
 import {
@@ -16,6 +16,7 @@ import {
 } from 'src/constants/articleProps';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
+import { useClose } from 'src/hooks/useClose';
 
 type TArticleParamsProps = {
 	setParamsFn: (_: ArticleStateType) => void;
@@ -24,6 +25,13 @@ type TArticleParamsProps = {
 export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 	const [isMenuActive, setMenuActive] = useState(false);
 	const [state, setState] = useState(defaultArticleState);
+	const containerRef = useRef(null);
+
+	useClose({
+		isActive: isMenuActive,
+		rootRef: containerRef,
+		onClose: () => setMenuActive(false),
+	});
 
 	return (
 		<>
@@ -36,7 +44,8 @@ export const ArticleParamsForm = ({ setParamsFn }: TArticleParamsProps) => {
 			<aside
 				className={clsx(styles.container, {
 					[styles.container_open]: isMenuActive,
-				})}>
+				})}
+				ref={containerRef}>
 				<form
 					className={styles.form}
 					onSubmit={(evt: React.FormEvent<EventTarget>) => {
